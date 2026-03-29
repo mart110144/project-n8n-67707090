@@ -1,0 +1,157 @@
+{
+  "name": "My workflow 4",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "data",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "95070ce1-12db-4b01-8a4d-26ec0fee500f",
+      "name": "Webhook",
+      "webhookId": "2efd3dd7-c503-43f6-af66-35d6d5dd7b53"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RZrGdEuAz21i0OZIgr5yoMyTcVqowPbwNW_lORquQtU",
+          "mode": "list",
+          "cachedResultName": "รหัสสินค้า ชื่อสินค้าจำนวนราคาP001สมุดปกแข็ง2050P...",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RZrGdEuAz21i0OZIgr5yoMyTcVqowPbwNW_lORquQtU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1159591392,
+          "mode": "list",
+          "cachedResultName": "รหัสสินค้า ชื่อสินค้าจำนวนราคาP001สมุดปกแข็ง2050P...",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RZrGdEuAz21i0OZIgr5yoMyTcVqowPbwNW_lORquQtU/edit#gid=1159591392"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "76ab414b-5901-4a0c-9ae0-f2fb82504835",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "N77UxEeIHdfyl1u0",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3e38b558-8033-46ee-9c40-1e61331dbe4a",
+              "name": "id",
+              "value": "={{ $json['รหัสสินค้า'] }}",
+              "type": "string"
+            },
+            {
+              "id": "07390881-7c31-4418-9887-4be697de67d7",
+              "name": "ืname",
+              "value": "={{ $json['ชื่อสินค้า'] }}",
+              "type": "string"
+            },
+            {
+              "id": "330d06f6-d381-47d9-8c3e-72cea2b8de00",
+              "name": "pcs",
+              "value": "={{ $json['จำนวน'] }}",
+              "type": "number"
+            },
+            {
+              "id": "ea5fcde0-2be3-491b-9265-bb32fc5ea9cc",
+              "name": "pice",
+              "value": "={{ $json['ราคา'] }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "0129b9c3-6081-42d9-897a-d04b98d2ef02",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        624,
+        0
+      ],
+      "id": "a576c94a-f46b-498a-9d73-875384e84043",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0b0a7eb6-bc3a-49ab-a122-11a14bedd47a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9f526523022c0abdd23b4e79323a9e848df7a1740a4d546c823313e1bdfda60c"
+  },
+  "id": "02lYEy7PpDqdy7vW",
+  "tags": []
+}
