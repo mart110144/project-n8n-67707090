@@ -106,7 +106,7 @@ const submitForm = async () => {
         status.message = "✅ บันทึกข้อมูลสำเร็จ!";
         status.type = "success";
 
-        // reset form
+        // reset form ใช่ป่าวว
         data.id = "";
         data.fullname = "";
         data.department = "";
