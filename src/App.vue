@@ -2,7 +2,9 @@
   <nav>
     <router-link to="/">register</router-link> |
     <router-link to="/about">show data</router-link> |
-    <router-link to="/data">data</router-link>
+    <router-link to="/data">data</router-link> |
+    <router-link to="/showdata12">ข้อมูลการเบิกอุปกรณ</router-link> 
+
   </nav>
   <router-view/>
 </template>

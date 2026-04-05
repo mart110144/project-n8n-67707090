@@ -1,0 +1,255 @@
+{
+  "name": "My workflow 6",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "showdata",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "30207250-9620-493f-bfb2-6570d5f2e758",
+      "name": "Webhook",
+      "webhookId": "d115d7c3-1a45-4f61-8207-29c926824087"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1AV2r7CtfUC-DmkNVxveME7XvjAEnatUnzNTJ8ydn2uU",
+          "mode": "list",
+          "cachedResultName": "รับข้อมูลการเบิกอุปกรณ (การตอบกลับ)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AV2r7CtfUC-DmkNVxveME7XvjAEnatUnzNTJ8ydn2uU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 164088679,
+          "mode": "list",
+          "cachedResultName": "การตอบแบบฟอร์ม 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AV2r7CtfUC-DmkNVxveME7XvjAEnatUnzNTJ8ydn2uU/edit#gid=164088679"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "58975eff-a8cd-43a3-bf7e-95db089eec36",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "N77UxEeIHdfyl1u0",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10b72a20-2adc-4738-9a9d-3a5853554fe0",
+              "name": "name",
+              "value": "={{ $json[' ชื่อ – นามสกุล'] }}",
+              "type": "string"
+            },
+            {
+              "id": "011f996b-6d64-45d6-be70-3ea0ab56e5dc",
+              "name": "position",
+              "value": "={{ $json['แผนก'] }}",
+              "type": "string"
+            },
+            {
+              "id": "35107db7-b9ef-4671-83d8-c33aef85daf8",
+              "name": "tool",
+              "value": "={{ $json['รายชื่ออุปกรณ์'] }}",
+              "type": "string"
+            },
+            {
+              "id": "fdb8139c-beb6-4782-bd14-6ead267bf992",
+              "name": "pcs",
+              "value": "={{ $json['จำนวนที่เบิก '] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "447c602e-4658-41db-8e73-16256aa28d6d",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        624,
+        0
+      ],
+      "id": "389625fd-7b3c-426a-9c72-15d0ad185e0e",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1AV2r7CtfUC-DmkNVxveME7XvjAEnatUnzNTJ8ydn2uU",
+          "mode": "list",
+          "cachedResultName": "รับข้อมูลการเบิกอุปกรณ (การตอบกลับ)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AV2r7CtfUC-DmkNVxveME7XvjAEnatUnzNTJ8ydn2uU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 164088679,
+          "mode": "list",
+          "cachedResultName": "การตอบแบบฟอร์ม 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AV2r7CtfUC-DmkNVxveME7XvjAEnatUnzNTJ8ydn2uU/edit#gid=164088679"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -208
+      ],
+      "id": "5001dbbb-8fe8-4cc8-b58f-62f2f97f9de2",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "A4zOhUUW55ooibTb",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. ดึงข้อมูลจาก Node ก่อนหน้า\nconst item = $input.item.json;\n\n// 2. ฟังก์ชันแปลง Excel Date เป็น JavaScript Date (แบบสมบูรณ์)\nconst excelDateToJSDate = (serial) => {\n    // ตรวจสอบว่ามีค่า และเป็นตัวเลขหรือไม่\n    if (!serial || isNaN(serial)) return \"ไม่ระบุวันที่\";\n    \n    // แปลง Serial Date เป็น Milliseconds\n    // 25569 คือส่วนต่างวันระหว่าง Excel (1900) และ JS (1970)\n    // 86400 * 1000 คือจำนวน Milliseconds ใน 1 วัน\n    const date = new Date(Math.round((serial - 25569) * 86400 * 1000));\n    \n    // คืนค่ารูปแบบวันที่ไทย (เช่น 5 เมษายน 2569 13:10:46)\n    return date.toLocaleString('th-TH', {\n        year: 'numeric',\n        month: 'long',\n        day: 'numeric',\n        hour: '2-digit',\n        minute: '2-digit',\n        second: '2-digit'\n    });\n};\n\n// 3. ส่งค่ากลับออกไป (ตรวจสอบชื่อ Key ให้ตรงกับ Google Sheets)\nreturn {\n    timestamp: excelDateToJSDate(item['ประทับเวลา']),\n    fullname: item['ชื่อ – นามสกุล'] || \"ไม่ระบุชื่อ\",\n    department: item['แผนก'] || \"ไม่ระบุแผนก\",\n    equipment_name: item['รายชื่ออุปกรณ์'] || \"ไม่ระบุอุปกรณ์\",\n    amount: item['จำนวนที่เบิก'] || 0\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        -208
+      ],
+      "id": "4e8710fc-6137-46bb-890d-5932026d03aa",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "phongsakorn606@gmail.com",
+        "subject": "=สวัสดีคุณ {{ $('Google Sheets Trigger').item.json[' ชื่อ – นามสกุล'] }}",
+        "message": "=เวลา  {{ $json.timestamp }}\nชื่อ-นามสกุล {{ $('Google Sheets Trigger').item.json[' ชื่อ – นามสกุล'] }}\nแผนก {{ $('Google Sheets Trigger').item.json['แผนก'] }}\nรายชื่ออุปกรณ์ {{ $('Google Sheets Trigger').item.json['รายชื่ออุปกรณ์'] }}\nจำนวนที่เบิก {{ $('Google Sheets Trigger').item.json['จำนวนที่เบิก '] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        -208
+      ],
+      "id": "080aae90-74a2-4acd-a65c-7d7c4c46c6b3",
+      "name": "Send a message",
+      "webhookId": "9534f3fa-0645-4f1e-844c-027e2c0a66c2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "huzu6qGCRyeoieSl",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9cd8a8d1-36da-4b11-9410-f2e0fc3430c1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9f526523022c0abdd23b4e79323a9e848df7a1740a4d546c823313e1bdfda60c"
+  },
+  "id": "eWE55tvVmTQFflDE",
+  "tags": []
+}
