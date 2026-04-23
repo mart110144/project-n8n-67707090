@@ -1,0 +1,259 @@
+{
+  "name": "My workflow 4",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "data",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "acf15491-a839-4ddb-9dbc-370e14cc5689",
+      "name": "Webhook",
+      "webhookId": "2efd3dd7-c503-43f6-af66-35d6d5dd7b53"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RZrGdEuAz21i0OZIgr5yoMyTcVqowPbwNW_lORquQtU",
+          "mode": "list",
+          "cachedResultName": "รหัสสินค้า ชื่อสินค้าจำนวนราคาP001สมุดปกแข็ง2050P...",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RZrGdEuAz21i0OZIgr5yoMyTcVqowPbwNW_lORquQtU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1159591392,
+          "mode": "list",
+          "cachedResultName": "รหัสสินค้า ชื่อสินค้าจำนวนราคาP001สมุดปกแข็ง2050P...",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RZrGdEuAz21i0OZIgr5yoMyTcVqowPbwNW_lORquQtU/edit#gid=1159591392"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "9565bf4f-dc5d-404f-8a3f-283917184146",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "iBzC9pe67kNPQR6h",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3e38b558-8033-46ee-9c40-1e61331dbe4a",
+              "name": "id",
+              "value": "={{ $json['รหัสสินค้า'] }}",
+              "type": "string"
+            },
+            {
+              "id": "07390881-7c31-4418-9887-4be697de67d7",
+              "name": "ืname",
+              "value": "={{ $json['ชื่อสินค้า'] }}",
+              "type": "string"
+            },
+            {
+              "id": "330d06f6-d381-47d9-8c3e-72cea2b8de00",
+              "name": "pcs",
+              "value": "={{ $json['จำนวน'] }}",
+              "type": "number"
+            },
+            {
+              "id": "ea5fcde0-2be3-491b-9265-bb32fc5ea9cc",
+              "name": "price",
+              "value": "={{ $json['ราคา'] }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "4aa182d0-908c-4933-8542-2fbe013bba3e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        624,
+        0
+      ],
+      "id": "7aa28184-1158-47fc-8829-94ed5d109b2f",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "order",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        -160
+      ],
+      "id": "17cfb797-4bac-443f-9a99-7e0603056cd8",
+      "name": "Webhook1",
+      "webhookId": "8d4dcc2b-2002-4d53-9752-0a9bce11e39e"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. ดึงข้อมูลจาก body\nconst data = $input.item.json.body;\n\n// 2. ตรวจสอบข้อมูล\nif (!data || !data.items) {\n  return { error: \"No items found in body\" };\n}\n\n// 3. จัดรูปแบบรายการสินค้า\nconst itemsList = data.items.map((item, index) => {\n  return `${index + 1}. ${item.name}\n   จำนวน: ${item.orderQty} ชิ้น\n   ราคา: ${item.price} บาท`;\n}).join('\\n\\n');\n\n// 4. ส่งค่าไป Gmail\nreturn {\n  recipient_email: data.email,\n  subject: \"ยืนยันรายการสั่งซื้อสินค้า\",\n  message: \n`📦 ยืนยันรายการสั่งซื้อสินค้า\n\nเรียน คุณลูกค้า\n\n🧾 รายการสินค้าที่สั่งซื้อ:\n----------------------------------\n${itemsList}\n----------------------------------\n\n💰 ยอดรวมสุทธิ: ${data.total_amount} บาท\n📅 วันที่สั่งซื้อ: ${data.order_date}\n\n📧 อีเมลผู้สั่งซื้อ: ${data.email}\n\nขอบคุณที่ใช้บริการครับ 🙏`\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        -160
+      ],
+      "id": "9f557c64-8164-4c7e-a564-d040275dce6e",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.recipient_email }}",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        -160
+      ],
+      "id": "ea3b5133-a5a7-4b99-b56c-fdd5a7ee3fac",
+      "name": "Send a message",
+      "webhookId": "807e471c-a25e-4c5b-9901-cce27780684c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VqYRjScO0DcH9ljs",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {
+          "responseCode": null
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        624,
+        -160
+      ],
+      "id": "50000d22-21dd-43dc-8809-6e392df61a19",
+      "name": "Respond to Webhook1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "da810929-73c7-48e2-80a6-ba337730026c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8757e7a45ca9e06e98bea8dbb637994a1c61fec9bddfc4021be4ac43ef6a0f7"
+  },
+  "id": "pixOTGTBbpu2kaJp",
+  "tags": []
+}
