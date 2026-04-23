@@ -1,0 +1,2 @@
+{"__type":"$$EventMessageAudit","id":"14e87cd3-2e85-43d7-aa74-3009e01cf9e5","ts":"2026-04-23T01:59:23.789-04:00","eventName":"n8n.audit.workflow.activated","message":"n8n.audit.workflow.activated","payload":{"workflowId":"pixOTGTBbpu2kaJp","workflowName":"My workflow 4","activeVersionId":"7e25f2a5-c637-4ba7-a316-42f987c621a4","activationMode":"init"}}
+{"__type":"$$EventMessageConfirm","confirm":"14e87cd3-2e85-43d7-aa74-3009e01cf9e5","ts":"2026-04-23T01:59:23.790-04:00","source":{"id":"0","name":"eventBus"}}

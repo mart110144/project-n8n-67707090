@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import Showdata from '@/views/showdata.vue'
+import order from '@/views/order.vue'
 
 const routes = [
   {
@@ -9,9 +9,9 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/data',
-    name: 'data',
-    component: () => import(/* webpackChunkName: "about" */ '../views/showdata.vue')
+    path: '/order',
+    name: 'order',
+    component: () => import(/* webpackChunkName: "about" */ '../views/order.vue')
   },
   {
     path: '/about',
